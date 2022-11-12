@@ -1,4 +1,4 @@
 # Aftermath Website
 
-TODO add favicon 
-TODO add 404 
+- TODO add favicon 
+- TODO add 404 
