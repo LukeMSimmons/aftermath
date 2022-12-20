@@ -1,11 +1,13 @@
-from config import buff, template, font, sig 
+from config import project_folder, buff, template, font, sig 
 import dash; from dash import html, dcc, callback, Input, Output 
 import plotly.express as px 
 import pandas as pd 
 
+import os 
+
 # Get DataFrames 
-co_df = pd.read_pickle('data/pkl/co_df.pkl')
-steam_df = pd.read_pickle('data/pkl/steam_games.pkl')
+co_df = pd.read_pickle(f'{project_folder}\\data\\pkl\\co_df.pkl') 
+steam_df = pd.read_pickle(f'{project_folder}\\data\\pkl\\steam_games.pkl') 
 
 # Register to app.py 
 title = 'Aftermath Dashboards' 
@@ -16,7 +18,7 @@ layout = html.Div([
 
     html.Div([
         html.Div([
-            html.Img(src='assets/aftermath_logo.png')], 
+            html.Img(src='/assets/aftermath_logo.png')], 
             style=dict(marginLeft='8px', display='inline-block')), 
         html.Div([
             html.H1(title)], 
@@ -51,7 +53,7 @@ layout = html.Div([
 
     html.Br(), 
     html.Div([
-        html.H3('You could track variables over time with a line plot.'), 
+        html.H3('You can track variables over time with a line plot.'), 
         html.H5('Protip: try double-clicking one of the sites in the legend.')], 
         style=dict(marginLeft=buff)), 
 
@@ -72,11 +74,11 @@ layout = html.Div([
             dcc.Graph(id='co_timeseries')], 
             style=dict())]), 
 
+    html.Br(), html.Br(), 
     html.Div([
-        html.H3('Have us build your own interactive dashboard, and watch the insights just ooze right out.')], 
+        html.H3('Let us build your interactive dashboard, and watch the insights pour right out.')], 
         style=dict(marginLeft=buff)), 
 
-    html.Br(), html.Br(), html.Br(), html.Br(), 
     sig]) 
 
 
