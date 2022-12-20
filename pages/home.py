@@ -6,8 +6,8 @@ import pandas as pd
 import os 
 
 # Get DataFrames 
-co_df = pd.read_pickle(f'{project_folder}\\data\\pkl\\co_df.pkl') 
-steam_df = pd.read_pickle(f'{project_folder}\\data\\pkl\\steam_games.pkl') 
+co_df = pd.read_pickle(f'{project_folder}/data/pkl/co_df.pkl') 
+steam_df = pd.read_pickle(f'{project_folder}/data/pkl/steam_games.pkl') 
 
 # Register to app.py 
 title = 'Aftermath Dashboards' 
