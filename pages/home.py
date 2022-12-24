@@ -76,7 +76,7 @@ layout = html.Div([
 
     html.Br(), html.Br(), 
     html.Div([
-        html.H3('Let us build your interactive dashboard, and watch the insights pour right out.')], 
+        html.H3('Let us build your own interactive dashboard, and watch the insights pour right out.')], 
         style=dict(marginLeft=buff)), 
 
     sig]) 

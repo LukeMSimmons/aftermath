@@ -9,7 +9,7 @@ buff = '14px'
 
 sig = html.Div([
         html.Div([
-            html.H4('For more information, or a quote, send an email to:')], 
+            html.H4('For more information or a quote, send an email to:')], 
             style=dict(display='inline-block')), 
         html.Div([
             html.A('contactlukesimmons@gmail.com', 
