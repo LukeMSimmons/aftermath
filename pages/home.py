@@ -34,7 +34,7 @@ layout = html.Div([
 
     html.Div([
         html.H3('You may want to analyze one numerical variable, perhaps with a histogram.')], 
-        style=dict(marginLeft=buff)), 
+        style=dict(marginLeft=buff, height='35px')), 
 
     html.Div([
         html.Div([
@@ -53,9 +53,11 @@ layout = html.Div([
 
     html.Br(), 
     html.Div([
-        html.H3('You can track variables over time with a line plot.'), 
+        html.H3("Perhaps you'd like to track variables over time with a line plot.")], 
+        style=dict(marginLeft=buff, height='25px')), 
+    html.Div([
         html.H5('Protip: try double-clicking one of the sites in the legend.')], 
-        style=dict(marginLeft=buff)), 
+        style=dict(marginLeft=buff, height='35px')), 
 
     html.Div([
         html.Div([
@@ -65,7 +67,7 @@ layout = html.Div([
             style=dict(marginLeft=buff, width='10%', display='inline-block')), 
         html.Div([
             html.H4('Select Counties'), 
-            dcc.Dropdown(value=['San Diego'], 
+            dcc.Dropdown(value=['Alameda'], 
                          multi=True, id='co_county_dropdown')], 
             style=dict(marginLeft=buff, width='12%', display='inline-block'))]), 
 
@@ -77,7 +79,7 @@ layout = html.Div([
     html.Br(), html.Br(), 
     html.Div([
         html.H3('Let us build your own interactive dashboard, and watch the insights pour right out.')], 
-        style=dict(marginLeft=buff)), 
+        style=dict(marginLeft=buff, height='35px')), 
 
     sig]) 
 
