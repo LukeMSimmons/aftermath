@@ -8,6 +8,7 @@ import os
 # Get DataFrames 
 co_df = pd.read_pickle(f'{project_folder}/data/pkl/co_df.pkl') 
 steam_df = pd.read_pickle(f'{project_folder}/data/pkl/steam_games.pkl') 
+health_df = pd.read_pickle(f'{project_folder}/data/pkl/us_health.pkl') 
 
 # Register to app.py 
 title = 'Aftermath Dashboards' 
@@ -76,9 +77,29 @@ layout = html.Div([
             dcc.Graph(id='co_timeseries')], 
             style=dict())]), 
 
+    html.Br(), 
+    html.Div([
+        html.H3("You may prefer something a bit more animated.")], 
+        style=dict(marginLeft=buff)), 
+    html.Div([
+        html.H5('Protip: pick a metric and hit the play button.')], 
+        style=dict(marginLeft=buff)), 
+
+    html.Div([
+        html.Div([
+            html.H4('Select a Metric'), 
+            dcc.Dropdown(sorted(health_df['Question'].unique(), reverse=True), 
+                         'Sale of cigarette packs', id='health_dropdown')], 
+            style=dict(marginLeft=buff, width='30%', display='inline-block'))]), 
+
+    html.Div([
+        html.Div([
+            dcc.Graph(id='health_bar')], 
+            style=dict())]), 
+
     html.Br(), html.Br(), 
     html.Div([
-        html.H3('Let us build your own interactive dashboard, and watch the insights pour right out.')], 
+        html.H3('Have us build your own interactive dashboard, and watch the insights just pour right out.')], 
         style=dict(marginLeft=buff)), 
 
     sig]) 
@@ -104,13 +125,6 @@ def steam_fig(col, marginal):
     fig.update_layout(title=title, title_x=.45, title_font_size=18, 
                       template=template, font_family=font, height=600)
     return fig 
-
-
-
-
-
-
-
 
 
 ## CO Timeseries 
@@ -141,3 +155,26 @@ def co_timeseries(state, counties):
     fig.update_yaxes(title='Max CO (ppm)', rangemode='tozero')
 
     return fig
+
+
+## Health Bar 
+@callback(
+    Output('health_bar', 'figure'), 
+    Input('health_dropdown', 'value'))
+
+def health_bar(question): 
+
+    dfi = health_df[health_df['Question']==question] 
+
+    title = question[0:50] + '...' if len(question)>50 else question 
+    title+= ' by State over time'
+
+    fig = px.bar(dfi, x='DataValue', y='LocationDesc', orientation='h', 
+                 animation_frame='YearStart', animation_group='LocationDesc', 
+                 range_x=[0, dfi['DataValue'].max()])
+
+    fig.update_layout(title=title, title_x=.45, title_font_size=18, 
+                      template=template, xaxis_title= '', yaxis_title='', 
+                      font_family=font, height=890) 
+
+    return fig 
