@@ -20,32 +20,32 @@ layout = html.Div([
     html.Div([
         html.Div([
             html.Img(src='/assets/aftermath_logo.png')], 
-            style=dict(marginLeft='8px', display='inline-block')), 
+            style=dict(marginLeft=buff, marginTop='10px', display='inline-block')), 
         html.Div([
-            html.H1(title)], 
-            style=dict(marginLeft='14px', display='inline-block'))], 
-        style=dict(height='58px')), 
-    
-    html.Div([
+            html.H2(title)], 
+            style=dict(marginLeft='8px', verticalAlign='top', marginTop='10px', display='inline-block')), 
         html.Div([
-            html.H3('Do you have raw data, but want insights instead?')]), 
+            html.H4('Do you have data, but want insights instead?')], 
+            style=dict(marginLeft=buff)), 
         html.Div([
-            html.H3('A web app like this one might just be right for you!')])], 
-        style=dict(marginLeft=buff, height='82px')), 
+            html.H4(['A web app like this one might be right for you!', html.Br(), html.Br()])], 
+            style=dict(marginLeft=buff))], 
+        style=dict()), 
 
     html.Div([
-        html.H3('You may want to analyze one numerical variable, perhaps with a histogram.')], 
+        html.H4('You may want to analyze one numerical variable, perhaps with a histogram.')], 
         style=dict(marginLeft=buff)), 
 
     html.Div([
         html.Div([
             html.H4('Select a variable'), 
             dcc.Dropdown(steam_df.columns, 'Metacritic Score', id='steam_dropdown')], 
-            style=dict(marginLeft=buff, width='10%', display='inline-block')), 
+            style=dict(marginLeft=buff, width='180px', display='inline-block')), 
         html.Div([
-            html.H4('Marginal Plot Type'), 
+            html.H4('Marginal Plot'), 
             dcc.Dropdown(['box', 'violin', 'rug', 'None'], 'box', id='steam_m_dropdown')], 
-            style=dict(marginLeft=buff, width='10%', display='inline-block'))]), 
+            style=dict(marginLeft=buff, width='140px', display='inline-block'))], 
+        style=dict()), 
 
     html.Div([
         html.Div([
@@ -54,10 +54,10 @@ layout = html.Div([
 
     html.Br(), 
     html.Div([
-        html.H3("Perhaps you'd like to track variables over time with a line plot.")], 
+        html.H4("You can track variables over time with a line plot.")], 
         style=dict(marginLeft=buff)), 
     html.Div([
-        html.H5('Protip: try double-clicking one of the sites in the legend.')], 
+        html.H5('Protip: try double-clicking one of the items in the legend.')], 
         style=dict(marginLeft=buff)), 
 
     html.Div([
@@ -65,12 +65,12 @@ layout = html.Div([
             html.H4('Select a State'), 
             dcc.Dropdown(co_df['State'].unique(), 'California', 
                          id='co_state_dropdown')], 
-            style=dict(marginLeft=buff, width='10%', display='inline-block')), 
+            style=dict(marginLeft=buff, width='150px', display='inline-block')), 
         html.Div([
             html.H4('Select Counties'), 
-            dcc.Dropdown(value=['Alameda'], 
+            dcc.Dropdown(value=['San Diego'], 
                          multi=True, id='co_county_dropdown')], 
-            style=dict(marginLeft=buff, width='12%', display='inline-block'))]), 
+            style=dict(marginLeft=buff, width='180px', display='inline-block'))]), 
 
     html.Div([
         html.Div([
@@ -79,10 +79,10 @@ layout = html.Div([
 
     html.Br(), 
     html.Div([
-        html.H3("You may prefer something a bit more animated.")], 
+        html.H4("You may prefer something a bit more animated.")], 
         style=dict(marginLeft=buff)), 
     html.Div([
-        html.H5('Protip: pick a metric and hit the play button.')], 
+        html.H5('Hint: pick a metric and hit the play button.')], 
         style=dict(marginLeft=buff)), 
 
     html.Div([
@@ -90,7 +90,7 @@ layout = html.Div([
             html.H4('Select a Metric'), 
             dcc.Dropdown(sorted(health_df['Question'].unique(), reverse=True), 
                          'Sale of cigarette packs', id='health_dropdown')], 
-            style=dict(marginLeft=buff, width='30%', display='inline-block'))]), 
+            style=dict(marginLeft=buff, width='600px', display='inline-block'))]), 
 
     html.Div([
         html.Div([
@@ -99,7 +99,7 @@ layout = html.Div([
 
     html.Br(), html.Br(), 
     html.Div([
-        html.H3('Have us build your own interactive dashboard, and watch the insights just pour right out.')], 
+        html.H4('If you think this kind of interactivity would facilitate data driven actions in your business, have us build your own dashboard and watch the insights pour right out.')], 
         style=dict(marginLeft=buff)), 
 
     sig]) 
@@ -121,13 +121,13 @@ def steam_fig(col, marginal):
 
     fig = px.histogram(steam_df[steam_df[col]!=0], x=col, marginal=marginal) 
 
-    title = f'Distribution of {col} for Games on Steam'
-    fig.update_layout(title=title, title_x=.45, title_font_size=18, 
+    title = f'{col} for Games on Steam'
+    fig.update_layout(title=title, title_x=.5, title_y=.95, title_font_size=18, 
                       template=template, font_family=font, height=600)
     return fig 
 
 
-## CO Timeseries 
+## Filter Dropdown 
 @callback(
     Output('co_county_dropdown', 'options'), 
     Input('co_state_dropdown', 'value')) 
@@ -146,11 +146,15 @@ def co_timeseries(state, counties):
     
     dfi = co_df[(co_df['State']==state) & (co_df['County'].isin(counties))]
 
-    title = 'Daily Max Carbon Monoxide by County in 1980'
+    title = 'Daily Max CO by County in 1980'
     fig = px.line(dfi, x='Date', y='Max CO', color='Site') 
     
-    fig.update_layout(title=title, title_x=.45, title_font_size=18, 
-                      template=template, font_family=font, height=600)
+    fig.update_layout(title=title, title_x=.5, title_y=.95, title_font_size=18, 
+                      template=template, font_family=font, height=600, 
+                      legend={'xanchor':'center', 'x':.5, 
+                              'yanchor':'top', 'y':1, 
+                              'bgcolor':'rgba(0,0,0,0)', 
+                              'title':''})
     
     fig.update_yaxes(title='Max CO (ppm)', rangemode='tozero')
 
@@ -166,15 +170,15 @@ def health_bar(question):
 
     dfi = health_df[health_df['Question']==question] 
 
-    title = question[0:50] + '...' if len(question)>50 else question 
+    title = question[0:30] + '...' if len(question)>30 else question 
     title+= ' by State over time'
 
     fig = px.bar(dfi, x='DataValue', y='LocationDesc', orientation='h', 
                  animation_frame='YearStart', animation_group='LocationDesc', 
                  range_x=[0, dfi['DataValue'].max()])
 
-    fig.update_layout(title=title, title_x=.45, title_font_size=18, 
+    fig.update_layout(title=title, title_x=.5, title_y=.96, title_font_size=18, 
                       template=template, xaxis_title= '', yaxis_title='', 
-                      font_family=font, height=890) 
+                      font_family=font, height=700) 
 
     return fig 

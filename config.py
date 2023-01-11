@@ -16,4 +16,4 @@ sig = html.Div([
                    href='https://linkedin.com/in/lukemsimmons', 
                    style=dict(color='darkcyan', textDecoration='none'))], 
             style=dict(marginLeft='4px', fontSize='20px', display='inline-block'))], 
-        style=dict(marginLeft=buff, color='#595959')) 
+        style=dict(marginLeft=buff)) 
