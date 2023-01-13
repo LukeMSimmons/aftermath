@@ -12,8 +12,9 @@ sig = html.Div([
             html.H4('For more information or a quote, send an email to:')], 
             style=dict(display='inline-block')), 
         html.Div([
-            html.A('contactlukesimmons@gmail.com', 
-                   href='https://linkedin.com/in/lukemsimmons', 
+            html.A('hello@aftermathdashboards.com', 
+                   href='mailto:hello@aftermathdashboards.com', 
                    style=dict(color='darkcyan', textDecoration='none'))], 
-            style=dict(marginLeft='4px', fontSize='20px', display='inline-block'))], 
+            style=dict(marginLeft='4px', fontSize='18px', display='inline-block')), 
+        html.Br(), html.Br()], 
         style=dict(marginLeft=buff)) 

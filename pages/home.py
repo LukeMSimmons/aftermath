@@ -3,18 +3,39 @@ import dash; from dash import html, dcc, callback, Input, Output
 import plotly.express as px 
 import pandas as pd 
 
-import os 
 
 # Get DataFrames 
 co_df = pd.read_pickle(f'{project_folder}/data/pkl/co_df.pkl') 
 steam_df = pd.read_pickle(f'{project_folder}/data/pkl/steam_games.pkl') 
 health_df = pd.read_pickle(f'{project_folder}/data/pkl/us_health.pkl') 
+energy_df = pd.read_pickle(f'{project_folder}/data/pkl/energy_df.pkl') 
 
 # Register to app.py 
-title = 'Aftermath Dashboards' 
-dash.register_page(__name__, title=title) 
+dash_title = 'Aftermath Dashboards' 
+dash.register_page(__name__, title=dash_title) 
 
 
+
+# Figures with no callbacks
+
+## Health Bubble 
+title = f'Energy Trends by Country over time'
+health_fig = px.scatter(energy_df, x='Population', range_x=[0, 40e6], 
+                        y='Energy Consumption (tWh)', range_y=[0, 1200], 
+                        color='% Renewable', size='Per Capita (kWh)', size_max=70, 
+                        animation_frame='Year', animation_group='ISO Code', 
+                        hover_name='Country', text='ISO Code', 
+                        color_continuous_scale='Temps_r') 
+
+health_fig.update_layout(title=title, title_x=.5, title_font_size=18, title_y=.95, 
+                         template=template, font_family=font, height=600)
+
+health_fig.update_traces(textposition='top center') 
+
+
+
+# Layout
+ 
 layout = html.Div([
 
     html.Div([
@@ -22,11 +43,13 @@ layout = html.Div([
             html.Img(src='/assets/aftermath_logo.png')], 
             style=dict(marginLeft=buff, marginTop='10px', display='inline-block')), 
         html.Div([
-            html.H2(title)], 
-            style=dict(marginLeft='8px', verticalAlign='top', marginTop='10px', display='inline-block')), 
+            html.H2(dash_title)], 
+            style=dict(marginLeft='6px', verticalAlign='top', marginTop='6px', fontSize=16, display='inline-block')), 
+        html.Div([], 
+            style=dict(marginLeft=buff, height='2px', backgroundColor='#03e5a7', width='315px')), 
         html.Div([
             html.H4('Do you have data, but want insights instead?')], 
-            style=dict(marginLeft=buff)), 
+            style=dict(marginLeft=buff, marginTop='26px')), 
         html.Div([
             html.H4(['A web app like this one might be right for you!', html.Br(), html.Br()])], 
             style=dict(marginLeft=buff))], 
@@ -54,7 +77,7 @@ layout = html.Div([
 
     html.Br(), 
     html.Div([
-        html.H4("You can track variables over time with a line plot.")], 
+        html.H4("We could track variables over time with a line plot.")], 
         style=dict(marginLeft=buff)), 
     html.Div([
         html.H5('Protip: try double-clicking one of the items in the legend.')], 
@@ -97,9 +120,22 @@ layout = html.Div([
             dcc.Graph(id='health_bar')], 
             style=dict())]), 
 
+    html.Br(), 
+    html.Div([
+        html.H4("We can squeeze lots of metrics into a bubble chart.")], 
+        style=dict(marginLeft=buff)), 
+    html.Div([
+        html.H5('Pop Quiz: Can you find the US?')], 
+        style=dict(marginLeft=buff)), 
+
+    html.Div([
+        html.Div([
+            dcc.Graph(figure=health_fig, id='energy_bubble')], 
+            style=dict())]), 
+
     html.Br(), html.Br(), 
     html.Div([
-        html.H4('If you think this kind of interactivity would facilitate data driven actions in your business, have us build your own dashboard and watch the insights pour right out.')], 
+        html.H4('If interactivity like this would facilitate data driven actions in your business, let us build your dashboard and watch the insights pour right out.')], 
         style=dict(marginLeft=buff)), 
 
     sig]) 
