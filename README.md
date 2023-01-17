@@ -1,12 +1,12 @@
 # Aftermath Website
 
-## TODO animated bubble chart 
 ## TODO A map visualization 
-## TODO Get a real email address
-## TODO Forward emails to contact email
-## TODO Change email on aftermath homepage 
 ## TODO Make website discoverable on google 
-## TODO Linear Regression Prediction 
+## TODO Reach out to some clients 
+## TODO Reach out to some recruiters 
+
 ## TODO Logistic Regression Classification 
 ## TODO K-Nearest Cluster Segmentation 
+
 ## TODO Neural Net of some kind 
+## TODO Linear Regression Prediction 

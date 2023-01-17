@@ -9,6 +9,7 @@ co_df = pd.read_pickle(f'{project_folder}/data/pkl/co_df.pkl')
 steam_df = pd.read_pickle(f'{project_folder}/data/pkl/steam_games.pkl') 
 health_df = pd.read_pickle(f'{project_folder}/data/pkl/us_health.pkl') 
 energy_df = pd.read_pickle(f'{project_folder}/data/pkl/energy_df.pkl') 
+heatmap_df = pd.read_pickle(f'{project_folder}/data/pkl/heatmap_df.pkl') 
 
 # Register to app.py 
 dash_title = 'Aftermath Dashboards' 
@@ -16,7 +17,8 @@ dash.register_page(__name__, title=dash_title)
 
 
 
-# Figures with no callbacks
+# Figures with no callbacks 
+
 
 ## Health Bubble 
 title = f'Energy Trends by Country over time'
@@ -31,6 +33,14 @@ health_fig.update_layout(title=title, title_x=.5, title_font_size=18, title_y=.9
                          template=template, font_family=font, height=600)
 
 health_fig.update_traces(textposition='top center') 
+
+
+## Heatmap
+title = f'Correlation Matrix: Object Class vs Feature'
+heatmap_fig = px.imshow(heatmap_df, text_auto='.2f') 
+
+heatmap_fig.update_layout(title=title, title_x=.5, title_font_size=18, title_y=.95, 
+                         template=template, font_family=font)
 
 
 
@@ -77,7 +87,17 @@ layout = html.Div([
 
     html.Br(), 
     html.Div([
-        html.H4("We could track variables over time with a line plot.")], 
+        html.H4('Heatmaps are great for analyzing categorical relationships.')], 
+        style=dict(marginLeft=buff)), 
+
+    html.Div([
+        html.Div([
+            dcc.Graph(figure=heatmap_fig, id='heatmap_fig')], 
+            style=dict())]), 
+
+    html.Br(), 
+    html.Div([
+        html.H4("You can track variables over time with a line plot.")], 
         style=dict(marginLeft=buff)), 
     html.Div([
         html.H5('Protip: try double-clicking one of the items in the legend.')], 
@@ -102,7 +122,7 @@ layout = html.Div([
 
     html.Br(), 
     html.Div([
-        html.H4("You may prefer something a bit more animated.")], 
+        html.H4("Let's check out something a bit more animated.")], 
         style=dict(marginLeft=buff)), 
     html.Div([
         html.H5('Hint: pick a metric and hit the play button.')], 
@@ -122,7 +142,7 @@ layout = html.Div([
 
     html.Br(), 
     html.Div([
-        html.H4("We can squeeze lots of metrics into a bubble chart.")], 
+        html.H4("You can squeeze lots of metrics into a bubble chart.")], 
         style=dict(marginLeft=buff)), 
     html.Div([
         html.H5('Pop Quiz: Can you find the US?')], 
