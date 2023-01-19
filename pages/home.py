@@ -10,6 +10,7 @@ steam_df = pd.read_pickle(f'{project_folder}/data/pkl/steam_games.pkl')
 health_df = pd.read_pickle(f'{project_folder}/data/pkl/us_health.pkl') 
 energy_df = pd.read_pickle(f'{project_folder}/data/pkl/energy_df.pkl') 
 heatmap_df = pd.read_pickle(f'{project_folder}/data/pkl/heatmap_df.pkl') 
+wildfires_df = pd.read_pickle(f'{project_folder}/data/pkl/wildfires_df.pkl') 
 
 # Register to app.py 
 dash_title = 'Aftermath Dashboards' 
@@ -20,27 +21,48 @@ dash.register_page(__name__, title=dash_title)
 # Figures with no callbacks 
 
 
-## Health Bubble 
+## Heatmap
+title = f'Correlation Matrix: Object Class vs Feature'
+heatmap_fig = px.imshow(heatmap_df, text_auto='.2f') 
+
+heatmap_fig.update_layout(title=title, template=template, font_family=font, 
+                          coloraxis_showscale=False)
+
+heatmap_fig.update_layout(title_x=.5, title_y=.95, title_font_size=18)
+
+
+## Energy Bubble 
 title = f'Energy Trends by Country over time'
-health_fig = px.scatter(energy_df, x='Population', range_x=[0, 40e6], 
+energy_fig = px.scatter(energy_df, x='Population', range_x=[0, 40e6], 
                         y='Energy Consumption (tWh)', range_y=[0, 1200], 
                         color='% Renewable', size='Per Capita (kWh)', size_max=70, 
                         animation_frame='Year', animation_group='ISO Code', 
                         hover_name='Country', text='ISO Code', 
                         color_continuous_scale='Temps_r') 
 
-health_fig.update_layout(title=title, title_x=.5, title_font_size=18, title_y=.95, 
+energy_fig.update_layout(title=title, title_x=.5, title_font_size=18, title_y=.95, 
                          template=template, font_family=font, height=600)
 
-health_fig.update_traces(textposition='top center') 
+energy_fig.update_traces(textposition='top center') 
 
 
-## Heatmap
-title = f'Correlation Matrix: Object Class vs Feature'
-heatmap_fig = px.imshow(heatmap_df, text_auto='.2f') 
+## Wildfires Map 
+title = 'Wildfires in the US by Year'
+wildfire_map = px.scatter_geo(wildfires_df, lat='Latitude', lon='Longitude', 
+                              size='Size', color='Cause', hover_name='Name', 
+                              animation_frame='Year', size_max=50)
 
-heatmap_fig.update_layout(title=title, title_x=.5, title_font_size=18, title_y=.95, 
-                         template=template, font_family=font)
+wildfire_map.update_geos(visible=True, scope='usa', 
+                         showcountries=True, countrycolor="Black", 
+                         showsubunits=True, subunitcolor="Black", 
+                         showlakes=True, lakecolor="LightBlue")
+
+wildfire_map.update_layout(title=title, title_x=.5, title_y=.97, title_font_size=18, 
+                           template=template, font_family=font, height=600, 
+                           margin={'r':0,'t':0,'l':0,'b':0}, 
+                           legend={'xanchor':'right', 'x':.99, 
+                                   'yanchor':'bottom', 'y':-.16, 
+                                   'bgcolor':'rgba(0,0,0,0)'}) 
 
 
 
@@ -56,17 +78,20 @@ layout = html.Div([
             html.H2(dash_title)], 
             style=dict(marginLeft='6px', verticalAlign='top', marginTop='6px', fontSize=16, display='inline-block')), 
         html.Div([], 
-            style=dict(marginLeft=buff, height='2px', backgroundColor='#03e5a7', width='315px')), 
+            style=dict(marginLeft=buff, height='2px', backgroundColor='#00c790', width='313px')), 
         html.Div([
-            html.H4('Do you have data, but want insights instead?')], 
+            html.H4('Do you have data but want insights instead?')], 
             style=dict(marginLeft=buff, marginTop='26px')), 
         html.Div([
-            html.H4(['A web app like this one might be right for you!', html.Br(), html.Br()])], 
-            style=dict(marginLeft=buff))], 
+            html.H4(['A web app like this one might be right for you!'])], 
+            style=dict(marginLeft=buff)), 
+        html.Div([], 
+            style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b', width='380px'))], 
         style=dict()), 
 
+    html.Br(), 
     html.Div([
-        html.H4('You may want to analyze one numerical variable, perhaps with a histogram.')], 
+        html.H4('The distribution of numerical variables is often a good place to start')], 
         style=dict(marginLeft=buff)), 
 
     html.Div([
@@ -85,22 +110,25 @@ layout = html.Div([
             dcc.Graph(id='steam_histogram')], 
             style=dict())]), 
 
+    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
+
     html.Br(), 
     html.Div([
-        html.H4('Heatmaps are great for analyzing categorical relationships.')], 
+        html.H4('Heatmaps are great for analyzing categorical relationships'), 
+        html.H5('Callout: cosmic object type is correlated with redshift')], 
         style=dict(marginLeft=buff)), 
 
     html.Div([
         html.Div([
-            dcc.Graph(figure=heatmap_fig, id='heatmap_fig')], 
+            dcc.Graph(figure=heatmap_fig)], 
             style=dict())]), 
+
+    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
 
     html.Br(), 
     html.Div([
-        html.H4("You can track variables over time with a line plot.")], 
-        style=dict(marginLeft=buff)), 
-    html.Div([
-        html.H5('Protip: try double-clicking one of the items in the legend.')], 
+        html.H4("You can track variables over time with a line plot"), 
+        html.H5('Protip: try double-clicking one of the items in the legend')], 
         style=dict(marginLeft=buff)), 
 
     html.Div([
@@ -120,12 +148,12 @@ layout = html.Div([
             dcc.Graph(id='co_timeseries')], 
             style=dict())]), 
 
+    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
+
     html.Br(), 
     html.Div([
-        html.H4("Let's check out something a bit more animated.")], 
-        style=dict(marginLeft=buff)), 
-    html.Div([
-        html.H5('Hint: pick a metric and hit the play button.')], 
+        html.H4("Let's check out something a bit more animated"), 
+        html.H5('Hint: pick a metric and hit the play button')], 
         style=dict(marginLeft=buff)), 
 
     html.Div([
@@ -140,24 +168,36 @@ layout = html.Div([
             dcc.Graph(id='health_bar')], 
             style=dict())]), 
 
+    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
+
     html.Br(), 
     html.Div([
-        html.H4("You can squeeze lots of metrics into a bubble chart.")], 
-        style=dict(marginLeft=buff)), 
-    html.Div([
+        html.H4('Bubble Charts are great for analyzing a bunch of related metrics'), 
         html.H5('Pop Quiz: Can you find the US?')], 
         style=dict(marginLeft=buff)), 
 
     html.Div([
         html.Div([
-            dcc.Graph(figure=health_fig, id='energy_bubble')], 
+            dcc.Graph(figure=energy_fig)], 
             style=dict())]), 
 
-    html.Br(), html.Br(), 
+    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
+
+    html.Br(), 
     html.Div([
-        html.H4('If interactivity like this would facilitate data driven actions in your business, let us build your dashboard and watch the insights pour right out.')], 
+        html.H4("Sometimes we're especially interested in where stuff happens geographically"), 
+        html.H5('Suggestion: double-click a Cause to isolate it, and hit play')], 
         style=dict(marginLeft=buff)), 
 
+    html.Br(), 
+    html.Div([
+        html.Div([
+            dcc.Graph(figure=wildfire_map)], 
+            style=dict())]), 
+
+    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
+
+    html.Br(), 
     sig]) 
 
 

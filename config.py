@@ -9,6 +9,9 @@ buff = '14px'
 
 sig = html.Div([
         html.Div([
+            html.H4("If interactive visualizations like these would enhance data consumption in your organization, have us build your own dashboard and watch the insights pour right out.")], 
+            style=dict(marginTop='33px')), 
+        html.Div([
             html.H4('For more information or a quote, send an email to:')], 
             style=dict(display='inline-block')), 
         html.Div([
@@ -16,5 +19,5 @@ sig = html.Div([
                    href='mailto:hello@aftermathdashboards.com', 
                    style=dict(color='darkcyan', textDecoration='none'))], 
             style=dict(marginLeft='4px', fontSize='18px', display='inline-block')), 
-        html.Br(), html.Br()], 
+        html.Br()], 
         style=dict(marginLeft=buff)) 
