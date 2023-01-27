@@ -94,7 +94,7 @@ app.layout = html.Div([
             html.H2(dash_title)], 
             style=dict(marginLeft='6px', verticalAlign='top', marginTop='6px', display='inline-block')), 
         html.Div([], 
-            style=dict(marginLeft=buff, height='2px', backgroundColor='#00c790', width='313px')), 
+            style=dict(marginLeft=buff, height='2px', backgroundColor='#00c790', width='315px')), 
         html.Div([
             html.H4('Do you have data but want insights instead?')], 
             style=dict(marginLeft=buff, marginTop='26px')), 
@@ -102,7 +102,7 @@ app.layout = html.Div([
             html.H4(['A web app like this one might be right for you!'])], 
             style=dict(marginLeft=buff)), 
         html.Div([], 
-            style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b', width='380px'))], 
+            style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b', width='370px'))], 
         style=dict()), 
 
     html.Br(), 
