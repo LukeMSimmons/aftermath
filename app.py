@@ -210,7 +210,7 @@ app.layout = html.Div([
     html.Br(), 
     html.Div([
         html.H4("3D Scatterplots let us explore the topology of a feature space"), 
-        html.H5('Protip: click and drag to trigger your sense of depth')], 
+        html.H5('Protip: click and drag to activate your sense of depth')], 
         style=dict(marginLeft=buff)), 
 
     html.Br(), 
