@@ -1,7 +1,6 @@
 # Aftermath Website
 
-## TODO A map visualization 
-## TODO Make website discoverable on google 
+## TODO 3D bubble 
 ## TODO Reach out to some clients 
 ## TODO Reach out to some recruiters 
 

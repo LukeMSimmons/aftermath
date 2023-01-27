@@ -1,12 +1,12 @@
-from config import project_folder, buff, template, font, sig 
-import dash; from dash import Dash, html, dcc, callback, Input, Output 
+from config import project_folder, buff, template, font, breakline, sig 
+from dash import Dash, html, dcc, callback, Input, Output 
 import plotly.express as px 
 import pandas as pd 
 
-dash_title = 'Aftermath Dashboards' 
-app = Dash(__name__, title=dash_title) #, use_pages=True)
 
-#app.layout = html.Div([dash.page_container]) 
+dash_title = 'Aftermath Dashboards' 
+meta_tags = [{"name": "viewport", "content": "width=1024"}]
+app = Dash(__name__, title=dash_title, meta_tags=meta_tags) 
 
 
 # Get DataFrames 
@@ -16,9 +16,7 @@ health_df = pd.read_pickle(f'{project_folder}/data/pkl/us_health.pkl')
 energy_df = pd.read_pickle(f'{project_folder}/data/pkl/energy_df.pkl') 
 heatmap_df = pd.read_pickle(f'{project_folder}/data/pkl/heatmap_df.pkl') 
 wildfires_df = pd.read_pickle(f'{project_folder}/data/pkl/wildfires_df.pkl') 
-
-# Register to app.py 
-#dash.register_page(__name__, title=dash_title) 
+livingcost_df = pd.read_pickle(f'{project_folder}/data/pkl/livingcost_df.pkl') 
 
 
 
@@ -32,20 +30,20 @@ heatmap_fig = px.imshow(heatmap_df, text_auto='.2f')
 heatmap_fig.update_layout(title=title, template=template, font_family=font, 
                           coloraxis_showscale=False)
 
-heatmap_fig.update_layout(title_x=.5, title_y=.95, title_font_size=18)
+heatmap_fig.update_layout(title_x=.5, title_y=.95, title_font_size=18, height=550)
 
 
 ## Energy Bubble 
 title = f'Energy Trends by Country over time'
 energy_fig = px.scatter(energy_df, x='Population', range_x=[0, 40e6], 
                         y='Energy Consumption (tWh)', range_y=[0, 1200], 
-                        color='% Renewable', size='Per Capita (kWh)', size_max=70, 
+                        color='% Renewable', size='Per Capita (kWh)', size_max=100, 
                         animation_frame='Year', animation_group='ISO Code', 
                         hover_name='Country', text='ISO Code', 
                         color_continuous_scale='Temps_r') 
 
 energy_fig.update_layout(title=title, title_x=.5, title_font_size=18, title_y=.95, 
-                         template=template, font_family=font, height=600)
+                         template=template, font_family=font, height=700)
 
 energy_fig.update_traces(textposition='top center') 
 
@@ -54,7 +52,7 @@ energy_fig.update_traces(textposition='top center')
 title = 'Wildfires in the US by Year'
 wildfire_map = px.scatter_geo(wildfires_df, lat='Latitude', lon='Longitude', 
                               size='Size', color='Cause', hover_name='Name', 
-                              animation_frame='Year', size_max=50)
+                              animation_frame='Year', size_max=65)
 
 wildfire_map.update_geos(visible=True, scope='usa', 
                          showcountries=True, countrycolor="Black", 
@@ -62,18 +60,30 @@ wildfire_map.update_geos(visible=True, scope='usa',
                          showlakes=True, lakecolor="LightBlue")
 
 wildfire_map.update_layout(title=title, title_x=.5, title_y=.97, title_font_size=18, 
-                           template=template, font_family=font, height=600, 
+                           template=template, font_family=font, height=800, 
                            margin={'r':0,'t':0,'l':0,'b':0}, 
                            legend={'xanchor':'right', 'x':.99, 
-                                   'yanchor':'bottom', 'y':-.16, 
+                                   'yanchor':'bottom', 'y':0, 
                                    'bgcolor':'rgba(0,0,0,0)'}) 
+
+
+## Cost of Living 3D Scatter
+title = 'Cost of Living vs Income by City (USD)'
+livingcost_fig = px.scatter_3d(livingcost_df, x='Cheap Meal', y='Water Bottle', z='Apartment (1 br)', 
+                               size='Avg Salary (Mo)', size_max=35, color='country', hover_name='city') 
+
+camera = dict(up=dict(x=0, y=0, z=1),
+              center=dict(x=-.25, y=-.25, z=0),
+              eye=dict(x=-1.25, y=-1.25, z=.6))
+
+livingcost_fig.update_layout(title=title, title_x=.45, title_y=.97, title_font_size=18, 
+                             scene_camera=camera, template='plotly_white', 
+                             font_family=font, height=850)
 
 
 
 # Layout
  
-#layout = html.Div([
-
 app.layout = html.Div([
     
     html.Div([
@@ -82,7 +92,7 @@ app.layout = html.Div([
             style=dict(marginLeft=buff, marginTop='10px', display='inline-block')), 
         html.Div([
             html.H2(dash_title)], 
-            style=dict(marginLeft='6px', verticalAlign='top', marginTop='6px', fontSize=16, display='inline-block')), 
+            style=dict(marginLeft='6px', verticalAlign='top', marginTop='6px', display='inline-block')), 
         html.Div([], 
             style=dict(marginLeft=buff, height='2px', backgroundColor='#00c790', width='313px')), 
         html.Div([
@@ -116,8 +126,7 @@ app.layout = html.Div([
             dcc.Graph(id='steam_histogram')], 
             style=dict())]), 
 
-    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
-
+    breakline, 
     html.Br(), 
     html.Div([
         html.H4('Heatmaps are great for analyzing categorical relationships'), 
@@ -129,8 +138,7 @@ app.layout = html.Div([
             dcc.Graph(figure=heatmap_fig)], 
             style=dict())]), 
 
-    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
-
+    breakline, 
     html.Br(), 
     html.Div([
         html.H4("You can track variables over time with a line plot"), 
@@ -154,8 +162,7 @@ app.layout = html.Div([
             dcc.Graph(id='co_timeseries')], 
             style=dict())]), 
 
-    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
-
+    breakline, 
     html.Br(), 
     html.Div([
         html.H4("Let's check out something a bit more animated"), 
@@ -174,8 +181,7 @@ app.layout = html.Div([
             dcc.Graph(id='health_bar')], 
             style=dict())]), 
 
-    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
-
+    breakline, 
     html.Br(), 
     html.Div([
         html.H4('Bubble Charts are great for analyzing a bunch of related metrics'), 
@@ -187,8 +193,7 @@ app.layout = html.Div([
             dcc.Graph(figure=energy_fig)], 
             style=dict())]), 
 
-    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
-
+    breakline, 
     html.Br(), 
     html.Div([
         html.H4("Sometimes we're especially interested in where stuff happens geographically"), 
@@ -198,11 +203,23 @@ app.layout = html.Div([
     html.Br(), 
     html.Div([
         html.Div([
-            dcc.Graph(figure=wildfire_map)], 
+            dcc.Graph(figure=wildfire_map, config=dict(scrollZoom=False))], 
             style=dict())]), 
 
-    html.Div([], style=dict(marginLeft=buff, marginTop='30px', height='2px', backgroundColor='#00aa7b')), 
+    breakline, 
+    html.Br(), 
+    html.Div([
+        html.H4("3D Scatterplots let us explore the topology of a feature space"), 
+        html.H5('Protip: click and drag to trigger your sense of depth')], 
+        style=dict(marginLeft=buff)), 
 
+    html.Br(), 
+    html.Div([
+        html.Div([
+            dcc.Graph(figure=livingcost_fig, config=dict(scrollZoom=False))], 
+            style=dict())]), 
+
+    breakline, 
     html.Br(), 
     sig]) 
 
@@ -225,7 +242,7 @@ def steam_fig(col, marginal):
 
     title = f'{col} for Games on Steam'
     fig.update_layout(title=title, title_x=.5, title_y=.95, title_font_size=18, 
-                      template=template, font_family=font, height=600)
+                      template=template, font_family=font, height=650)
     return fig 
 
 
@@ -252,7 +269,7 @@ def co_timeseries(state, counties):
     fig = px.line(dfi, x='Date', y='Max CO', color='Site') 
     
     fig.update_layout(title=title, title_x=.5, title_y=.95, title_font_size=18, 
-                      template=template, font_family=font, height=600, 
+                      template=template, font_family=font, height=650, 
                       legend={'xanchor':'center', 'x':.5, 
                               'yanchor':'top', 'y':1, 
                               'bgcolor':'rgba(0,0,0,0)', 
@@ -277,7 +294,10 @@ def health_bar(question):
 
     fig = px.bar(dfi, x='DataValue', y='LocationDesc', orientation='h', 
                  animation_frame='YearStart', animation_group='LocationDesc', 
+                 color='DataValue', color_continuous_scale='Tealgrn', 
                  range_x=[0, dfi['DataValue'].max()])
+
+    fig.update_layout(coloraxis_showscale=False)
 
     fig.update_layout(title=title, title_x=.5, title_y=.96, title_font_size=18, 
                       template=template, xaxis_title= '', yaxis_title='', 
